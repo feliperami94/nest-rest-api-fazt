@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Put, Delete, Res, HttpStatus, Body, Param, NotFoundException, Query } from '@nestjs/common';
+import { JoiValidationPipe } from 'src/joi-validation.pipe';
 import { CreateProductDTO } from "./dto/product.dto";
 import { ProductService } from "./product.service";
+import {productJoiSchema} from "./schemas/joi-validation.product.schema"
 
 
 @Controller('product')
@@ -9,7 +11,7 @@ export class ProductController {
     constructor(private productService: ProductService){}
 
     @Post('/create')
-    async createPost(@Res() res, @Body() createProductDTO: CreateProductDTO){
+    async createPost(@Res() res, @Body(new JoiValidationPipe(productJoiSchema)) createProductDTO: CreateProductDTO){
         const product = await this.productService.createProduct(createProductDTO)
         return res.status(HttpStatus.OK).json({
             msg: 'Product Successfully Created',
@@ -48,7 +50,7 @@ export class ProductController {
     }
 
     @Put('/update')
-    async updateProduct(@Res() res, @Body() createProductDTO: CreateProductDTO, @Query('productId') productId){
+    async updateProduct(@Res() res, @Body(new JoiValidationPipe(productJoiSchema)) createProductDTO: CreateProductDTO, @Query('productId') productId){
         const updatedProduct = await this.productService.updateProduct(productId, createProductDTO);
         if(!updatedProduct){
             throw new NotFoundException('Product doesn´t exists');
