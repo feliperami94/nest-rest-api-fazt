@@ -2,8 +2,8 @@ import { Entity, Column, ObjectID, ObjectIdColumn, BaseEntity } from "typeorm";
 
 @Entity()
 export class Products extends BaseEntity{
-    @ObjectIdColumn()
-    _id: ObjectID
+    @ObjectIdColumn()//{ name: 'productID' }
+    productID: String
 
     @Column()
     name: string;

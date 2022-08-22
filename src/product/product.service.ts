@@ -5,7 +5,9 @@ import { CreateProductDTO } from './dto/product.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { InjectRepository } from '@nestjs/typeorm';
 import {  Products } from './entity/user.entity';
-import { Repository } from 'typeorm';
+import { MongoRepository } from 'typeorm';
+
+const ObjectId = require('mongodb').ObjectId;
 
 @Injectable()
 export class ProductService {
@@ -13,17 +15,19 @@ export class ProductService {
     constructor(
         // @InjectModel('Product') private productModel: Model<Product>){}
         @InjectRepository(Products)
-        private readonly productRepository: Repository<Product>
+        private readonly productRepository: MongoRepository<Product>
     ){}
 
     async getProducts(): Promise<Product[]>{
         const products = await this.productRepository.find();
         return products;
     }
+    // const product = await this.productRepository.findBy({
+    //     _id: productId
+    // })
 
-    async getProduct(id: string): Promise<Product>{
-        const product = await this.productRepository.findOneBy({_id: id});
-        console.log(product);
+    async getProduct(productID: string): Promise<Product>{
+        const product = await this.productRepository.findOneBy({_id: ObjectId(productID)})
         return product;
     }
 
