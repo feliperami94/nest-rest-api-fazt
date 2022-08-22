@@ -8,7 +8,7 @@ import {productJoiSchema} from "./schemas/joi-validation.product.schema"
 @Controller('product')
 export class ProductController {
 
-    constructor(private productService: ProductService){}
+    constructor(private readonly productService: ProductService){}
 
     @Post('/create')
     async createPost(@Res() res, @Body(new JoiValidationPipe(productJoiSchema)) createProductDTO: CreateProductDTO){
@@ -28,7 +28,7 @@ export class ProductController {
     }
 
     @Get('/:productId')
-    async getProduct(@Res() res,  @Param('productId') productId){
+    async getProduct(@Res() res,  @Param('productId') productId: string){
         const product = await this.productService.getProduct(productId)
         if(!product){
         throw new NotFoundException('Product doesn´t exists');
@@ -36,9 +36,10 @@ export class ProductController {
         return res.status(HttpStatus.OK).json(product);
     }
 
-    @Delete('/delete')
-    async deleteProduct(@Res() res, @Query('productId') productId){
+   @Delete('/delete')
+    async deleteProduct(@Res() res, @Query('productId') productId){///delete?productId=<productId>
         const productDeleted = await this.productService.deleteProduct(productId);
+        // console.log(productDeleted)
         if(!productDeleted){
             throw new NotFoundException('Product doesn´t exists');
         }
@@ -59,7 +60,7 @@ export class ProductController {
             message: 'Product Updated Successfully',
             updatedProduct});
 
-    }
+    } 
 
 
 
